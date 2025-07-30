@@ -95,14 +95,31 @@ def pie(df,            # whole dataframe
 def bar(df,            # whole dataframe
         column,        # which column to plot
         labels,
-        title = None): # title of the whole plot
+        title = None,  # title of the whole plot
+        wantPercentage = False):
     if title == None: title = column
 
     frequencies = df[column].value_counts()
+    total = sum(frequencies.values)
 
     fig, ax = plt.subplots(1,1)   # add a new figure to the plot
     
-    plt.bar(labels, frequencies.values) 
+    bars = plt.bar(labels, frequencies.values)
+
+    for i, bar in enumerate(bars):
+        if labels[i] == 'Male':   bar.set_color('cyan')
+        if labels[i] == 'Female': bar.set_color('red')
+
+        x_val = bar.get_x() + bar.get_width() / 2  # Center of the bar
+        y_val = bar.get_height()                     # Top of the bar
+        
+        val = frequencies.values[i]
+        plt.text(x_val, y_val, int(val),  ha='center', va='bottom', fontsize=9, color='black')
+        if wantPercentage and y_val > 2:  # do it only if the bar is high enough
+            percent = "%3.1f%%" % (100*val/total)
+            plt.text(x_val, 0, percent, ha='center', va='bottom', fontsize=9, color='black')
+            
+        
     plt.title("BAR CHART OF " + title.upper())
     
     
@@ -163,12 +180,17 @@ df['BMI'] = df['Weight']*kgPerLb / (df['Height']*mPerFoot)**2
 dfM = df[df['Gender'] == 'M'] # subframe of males   only
 dfF = df[df['Gender'] == 'F'] # subframe of females only
 
-pie(df, 'Gender', genderLabels)
-bar(df, 'Gender', genderLabels)
+
+
+
+
+
+#pie(df, 'Gender', genderLabels)
+bar(df, 'Gender', genderLabels, wantPercentage=True)
 #histogram(df,  'Height', heightBins,              title="Height",        wantPercentage=True, wantAverage=True)
 #histogram(df,  'BMI',       BMIbins,              title="BMI",           wantPercentage=False, wantAverage=False)
-histogram(df,  'Math',    gradeBins,              title="Math grades",   wantPercentage=False, wantAverage=False)
-pie(      df,  'Math',   gradeLabels, bins = gradeBins, title="Math grades")
+#histogram(df,  'Math',    gradeBins,              title="Math grades",   wantPercentage=False, wantAverage=False)
+#pie(      df,  'Math',   gradeLabels, bins = gradeBins, title="Math grades")
 
 #histogram(df,  'Weight', weightBins,                                     wantPercentage=True, wantAverage=True)
 #histogram(df,  'Weight', weightBinsFine,          title="finer weight",  wantPercentage=False, wantAverage=False)
