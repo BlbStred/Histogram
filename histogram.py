@@ -13,14 +13,17 @@ def histogram(df,            # whole dataframe
               wantPercentage = False,
               wantAverage = False):    
     if title == None: title = column
-    
+
     fig, ax = plt.subplots(1,1)  # add a new figure to the plot
     plt.tight_layout()           # Fill the whole figure
+    plt.grid(axis='x', alpha=0)                # no vertical grid lines
+    plt.grid(axis='y', alpha=0.2)              # faint horizontal grid lines
+    plt.xticks(bins, rotation=0, ha='center')  # label x-axis with the boundaries of the bins
 
     # The meat -- calculate the histogram        
     (values,                                   # value for each bin
      bins,                                     # returns the bins
-     patches) = ax.hist(                       # patches are graphic objects representing the bars 
+     bars) = ax.hist(                       # bars are graphic objects representing the bars 
          df[column], bins = bins,
          rwidth           = 0.8,               # width of the bars
          color            = 'cyan',            # fill color of the bars
@@ -28,23 +31,20 @@ def histogram(df,            # whole dataframe
          alpha            = 0.9)               # transparency of the bars
 
     
-    plt.xticks(bins, rotation=0, ha='center')  # label x-axis with the boundaries of the bins
-    plt.grid(axis='x', alpha=0)                # no vertical grid lines
-    plt.grid(axis='y', alpha=0.2)              # faint horizontal grid lines
     
 
 
     total = sum(values)
-    
+
     # Add the frequency count on top of each bar
     # and percentage at the bottom
-    for i, patch in enumerate(patches):
-        x_val = patch.get_x() + patch.get_width() / 2  # Center of the bar
-        y_val = patch.get_height()                     # Top of the bar
+    for i, bar in enumerate(bars):
+        x_val = bar.get_x() + bar.get_width() / 2  # Center of the bar
+        y_val = bar.get_height()                     # Top of the bar
         
         val = values[i]
         plt.text(x_val, y_val, int(val),  ha='center', va='bottom', fontsize=9, color='black')
-        if wantPercentage and y_val > 2:  # do it only if the bar is high enough
+        if wantPercentage and y_val > 3:  # do it only if the bar is high enough
             percent = "%3.1f%%" % (100*val/total)
             plt.text(x_val, 0, percent, ha='center', va='bottom', fontsize=9, color='black')
             
@@ -99,13 +99,20 @@ def bar(df,            # whole dataframe
         wantPercentage = False):
     if title == None: title = column
 
-    frequencies = df[column].value_counts()
-    total = sum(frequencies.values)
+    fig, ax = plt.subplots(1,1)  # add a new figure to the plot
+    plt.tight_layout()           # Fill the whole figure
+    plt.grid(axis='x', alpha=0)                # no vertical grid lines
+    plt.grid(axis='y', alpha=0.2)              # faint horizontal grid lines
 
-    fig, ax = plt.subplots(1,1)   # add a new figure to the plot
+    values = df[column].value_counts().values
+
     
-    bars = plt.bar(labels, frequencies.values)
+    bars = plt.bar(labels, values)
 
+    total = sum(values)
+
+    # Add the frequency count on top of each bar
+    # and percentage at the bottom
     for i, bar in enumerate(bars):
         if labels[i] == 'Male':   bar.set_color('cyan')
         if labels[i] == 'Female': bar.set_color('red')
@@ -113,13 +120,14 @@ def bar(df,            # whole dataframe
         x_val = bar.get_x() + bar.get_width() / 2  # Center of the bar
         y_val = bar.get_height()                     # Top of the bar
         
-        val = frequencies.values[i]
+        val = values[i]
         plt.text(x_val, y_val, int(val),  ha='center', va='bottom', fontsize=9, color='black')
-        if wantPercentage and y_val > 2:  # do it only if the bar is high enough
+        if wantPercentage and y_val > 3:  # do it only if the bar is high enough
             percent = "%3.1f%%" % (100*val/total)
             plt.text(x_val, 0, percent, ha='center', va='bottom', fontsize=9, color='black')
             
         
+    # Add labeling
     plt.title("BAR CHART OF " + title.upper())
     
     
@@ -187,7 +195,7 @@ dfF = df[df['Gender'] == 'F'] # subframe of females only
 
 #pie(df, 'Gender', genderLabels)
 bar(df, 'Gender', genderLabels, wantPercentage=True)
-#histogram(df,  'Height', heightBins,              title="Height",        wantPercentage=True, wantAverage=True)
+histogram(df,  'Height', heightBins,              title="Height",        wantPercentage=True, wantAverage=True)
 #histogram(df,  'BMI',       BMIbins,              title="BMI",           wantPercentage=False, wantAverage=False)
 #histogram(df,  'Math',    gradeBins,              title="Math grades",   wantPercentage=False, wantAverage=False)
 #pie(      df,  'Math',   gradeLabels, bins = gradeBins, title="Math grades")
