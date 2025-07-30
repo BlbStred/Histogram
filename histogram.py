@@ -56,7 +56,7 @@ def histogram(df,            # whole dataframe
 
     if wantAverage:
         average = df[column].mean()   # determines x-coordinate of the symbol
-        plt.text(average, 0, 'Î', ha='center', va='top', fontsize=28, color='black')
+        plt.text(average, 0, 'Δ', ha='center', va='top', fontsize=28, color='black') #non-ascii
         
         median  = df[column].median()
         plt.text(median,  -10, 'I', ha='center', va='bottom', fontsize=28, color='black')         
