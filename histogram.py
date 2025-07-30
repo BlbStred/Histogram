@@ -107,6 +107,22 @@ def pieC(df,            # whole dataframe
     plt.title("PIE CHART OF " + title.upper())
     
     
+###########   pie chart  ###############
+
+def barC(df,            # whole dataframe
+         column,        # which column to plot
+         labels,
+         title = None): # title of the whole plot
+    if title == None: title = column
+
+    frequencies = df[column].value_counts()
+
+    fig, ax = plt.subplots(1,1)   # add a new figure to the plot
+    
+    plt.bar(labels, frequencies.values) 
+    plt.title("BAR CHART OF " + title.upper())
+    
+    
 
 
 ###########   main  ###############
@@ -163,13 +179,16 @@ df['BMI'] = df['Weight']*kgPerLb / (df['Height']*mPerFoot)**2
 
 dfM = df[df['Gender'] == 'M'] # subframe of males   only
 dfF = df[df['Gender'] == 'F'] # subframe of females only
- 
-histogram(df,  'Height', heightBins,              title="Height",        wantPercentage=True, wantAverage=True)
+
+
+pieC(df, 'Gender', genderLabels);
+barC(df, 'Gender', genderLabels);
+#histogram(df,  'Height', heightBins,              title="Height",        wantPercentage=True, wantAverage=True)
 #histogram(df,  'BMI',       BMIbins,              title="BMI",           wantPercentage=False, wantAverage=False)
 #histogram(df,  'Math',    gradeBins,              title="Math grades",   wantPercentage=False, wantAverage=False)
 #pie(      df,  'Math',   gradeLabels, bins = gradeBins, title="Math grades")
 #pie(      df,  'Gender', genderLabels,                  title="Gender distribution")
-histogram(df,  'Weight', weightBins,                                     wantPercentage=True, wantAverage=True)
+#histogram(df,  'Weight', weightBins,                                     wantPercentage=True, wantAverage=True)
 #histogram(df,  'Weight', weightBinsFine,          title="finer weight",  wantPercentage=False, wantAverage=False)
 #histogram(df,  'Weight', weightBinsFinest,        title="finest weight", wantPercentage=False, wantAverage=False)
 
